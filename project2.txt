@@ -1,0 +1,126 @@
+def insert():
+    stu={}
+    file=open("project.dat","ab")
+    r=int(input("Enter Roll Number: "))
+    name=input("Enter your Name: ")
+    clas=input("Enter Class: ")
+    sub=input("Enter subject(PCM/PCB/COMM):")
+    marks=float(input("Enter your Total Marks: "))
+    stu['Roll_No']=r
+    stu['Name']=name
+    stu['Class']=clas
+    stu['Subject']=sub
+    stu['Marks']=marks
+    pickle.dump(stu,file)
+    print("Data Successfully inserted")
+    file.close()
+
+def display():
+    stu={}
+    file=open("project.dat","rb")
+    try:
+        while True:
+            stu=pickle.load(file)
+            for i in stu:
+                print(i,":",stu[i])
+            print("============================================")
+    except EOFError:
+        file.close()
+
+def search():
+    stu={}
+    f=0
+    file=open("project.dat","rb")
+    r=int(input("Enter Roll No to be Searched: "))
+    try:
+        while True:
+            stu=pickle.load(file)
+            if stu['Roll_No']==r:
+                print(stu)
+                f=1
+    except EOFError:
+        if f==0:
+            print("Record not found")
+        else:
+            print("Searching completed!!!")
+        file.close()
+def delete():
+    d={}
+    f=False
+    f1=open("protect.dat","rb")
+    f2=open("temp.dat","wb")
+    r=int(input("Enter roll number which you want to delete : "))
+    try:
+        while True:
+            d=pickle.load(f1)
+            if r==d['Roll_No']:
+                f=True
+            else:
+                pickle.dump(d,f2)
+    except EOFError:
+        if f==False:
+            print("Record not found")
+        else:
+            print("Record Deleted Successfully!!!")
+        
+    f1.close()
+    f2.close()
+    os.remove("project.dat")
+    os.rename("temp.dat","project.dat")
+def update():
+    stu={}
+    f=0
+    file=open("project.dat","rb+")
+    rn=int(input("Enter the roll number you want ot update:"))
+    try:
+        while True:
+            pos=file.tell()
+            stu=pickle.load(file)
+            if stu['Roll_No']==rn:
+                rn=int(input("Enter new roll no.: "))
+                name=input("Enter name: ")
+                clas=input("Enter Class: ")
+                sub=input("Enter subject(PCM/PCB/COMM)")
+                marks=float(input("Enter your Total Marks: "))
+                stu['Roll_No']=rn
+                stu['Name']=name
+                stu['Class']=clas
+                stu['Subject']=sub
+                stu['Marks']=marks
+                file.seek(pos)
+                pickle.dump(stu,file)
+                f=1
+    except EOFError:
+        if f==0:
+            print("Record not found")
+        else:
+            print("Record updated successfully!!!")
+        file.close()                
+        
+import pickle
+import os
+c="y"
+while c=="y" or c=="Y":
+    print("=======MAIN MENUE=======")
+    print("1. INSERTING THE RECORDS")
+    print("2. DISPLAYING THE RECORDS")
+    print("3. SEARCHING THE RECORDS")
+    print("4. DELETING THE RECORDS")
+    print("5. UPDATING THE RECORDS")
+    print("6.EXIT")
+    ch=int(input("Enter your choice (1-6): "))
+    if ch==1:
+        insert()
+    elif ch==2:
+        display()
+    elif ch==3:
+        search()
+    elif ch==4:
+        delete()
+    elif ch==5:
+        update()
+    elif ch==6:
+        exit(0)
+    else:
+        print("Wrong Choice!!!")
+    c=input("DO YOU WANT MAIN MENUE (Y/N): ")
